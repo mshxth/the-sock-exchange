@@ -15,16 +15,45 @@ const AddSock = () => {
             waterResistant: false,
             padded: false,
             antiBacterial: false
-        }
+        },
+        addedTimestamp: ''
     })
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        if (name in formData.sockDetails) {
+            setFormData({
+                ...formData,
+                sockDetails: { ...formData.sockDetails, [name]: value },
+            });
+        } else if (name in formData.additionalFeatures) {
+            setFormData({
+                ...formData,
+                additionalFeatures: {
+                    ...formData.additionalFeatures,
+                    [name]: type === "checkbox" ? checked : value,
+                },
+            });
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        }
+    };
+
 
     const handleSubmit = async (e) => {
         try {
             e.preventDefault();
+            const submission = {
+                ...formData,
+                addedTimestamp: new Date().toISOString(),
+            };    
             const response = await fetch(import.meta.env.VITE_SOCKS_API_URL, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({...formData, addedTimestamp: new Date().toISOString()})
+                body: JSON.stringify(submission)
             })
         } catch (e) {
             console.log("error in api post: ", e);
@@ -33,7 +62,7 @@ const AddSock = () => {
     };
     
     return (
-        <form className="p-3">
+        <form  onSubmit={handleSubmit} className="p-3">
         <div className="form-group">
             <label htmlFor="userId">User ID</label>
             <input
@@ -42,7 +71,7 @@ const AddSock = () => {
                 id="userId"
                 name="userId"
                 value={formData.userId}
-                onChange={(e) => setFormData({...formData, userId: e.target.value})}
+                onChange={handleChange}
             />
         </div>
         <div className="form-group">
@@ -52,7 +81,7 @@ const AddSock = () => {
                 id="size"
                 name="size"
                 value={formData.sockDetails.size}
-                onChange={(e) => setFormData({...formData, sockDetails: {...formData.sockDetails, size: e.target.value}})}
+                onChange={handleChange}
             >
                 <option>Small</option>
                 <option>Medium</option>
@@ -67,7 +96,7 @@ const AddSock = () => {
                 id="color"
                 name="color"
                 value={formData.sockDetails.color}
-                onChange={(e) => setFormData({...formData, sockDetails: {...formData.sockDetails, color: e.target.value}})}
+                onChange={handleChange}
             />
         </div>
         <div className="form-group">
@@ -78,7 +107,7 @@ const AddSock = () => {
                 id="pattern"
                 name="pattern"
                 value={formData.sockDetails.pattern}
-                onChange={(e) => setFormData({...formData, sockDetails: {...formData.sockDetails, pattern: e.target.value}})}
+                onChange={handleChange}
             />
         </div>
         <div className="form-group">
@@ -89,7 +118,7 @@ const AddSock = () => {
                 id="material"
                 name="material"
                 value={formData.sockDetails.material}
-                onChange={(e) => setFormData({...formData, sockDetails: {...formData.sockDetails, material: e.target.value}})}
+                onChange={handleChange}
             />
         </div>
         <div className="form-group">
@@ -99,7 +128,7 @@ const AddSock = () => {
                 id="condition"
                 name="condition"
                 value={formData.sockDetails.condition}
-                onChange={(e) => setFormData({...formData, sockDetails: {...formData.sockDetails, condition: e.target.value}})}
+                onChange={handleChange}
             >
                 <option>Used</option>
                 <option>New</option>
@@ -112,7 +141,7 @@ const AddSock = () => {
                 id="forFoot"
                 name="forFoot"
                 value={formData.sockDetails.forFoot}
-                onChange={(e) => setFormData({...formData, sockDetails: {...formData.sockDetails, forFoot: e.target.value}})}
+                onChange={handleChange}
             >
                 <option>Left</option>
                 <option>Right</option>
@@ -127,7 +156,7 @@ const AddSock = () => {
                     id="waterResistant"
                     name="waterResistant"
                     checked={formData.additionalFeatures.waterResistant}
-                    onChange={(e) => setFormData({...formData, additionalFeatures: {...formData.additionalFeatures, waterResistant: e.target.value}})}
+                    onChange={handleChange}
                 />
                 <label className="form-check-label" htmlFor="waterResistant">
                     Water Resistant
@@ -140,7 +169,7 @@ const AddSock = () => {
                     id="padded"
                     name="padded"
                     checked={formData.additionalFeatures.padded}
-                    onChange={(e) => setFormData({...formData, additionalFeatures: {...formData.additionalFeatures, padded: e.target.value}})}
+                    onChange={handleChange}
                 />
                 <label className="form-check-label" htmlFor="padded">
                     Padded
@@ -153,7 +182,7 @@ const AddSock = () => {
                     id="antiBacterial"
                     name="antiBacterial"
                     checked={formData.additionalFeatures.antiBacterial}
-                    onChange={(e) => setFormData({...formData, additionalFeatures: {...formData.additionalFeatures, antiBacterial: e.target.value}})}
+                    onChange={handleChange}
                 />
                 <label className="form-check-label" htmlFor="antiBacterial">
                     Anti Bacterial
