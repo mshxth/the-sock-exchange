@@ -54,7 +54,13 @@ const AddSock = () => {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(submission)
-            })
+            });
+
+            if (!response.ok) {
+                throw new Error();
+            }
+            const result = await response.json();
+            console.log('Sock added successfully, ', result);
         } catch (e) {
             console.log("error in api post: ", e);
         }
