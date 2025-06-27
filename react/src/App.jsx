@@ -5,6 +5,9 @@ import Promo from "./components/Promo";
 import Home from "./components/Home";
 import About from "./components/About";
 import Featured from "./components/Featured";
+import RequireAuth from "./components/RequireAuth";
+import { AuthProvider } from "./hooks/AuthContext";
+import LoginForm from "./components/LoginForm";
 import sock_data from './assets/sock.json';
 
 import React, { useState, useEffect } from "react";
@@ -77,7 +80,7 @@ function App() {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/add-sock">
+                <Link className="nav-link" to="/add">
                   Add Sock
                 </Link>
               </li>
@@ -107,11 +110,17 @@ function App() {
             Both socks and space rockets 🚀 will take you to new heights, but only one will get cold feet!
             <Featured />
             <hr/>
+            <AuthProvider>
             <Routes>
               <Route exact path="/" element={<Home data={data} handleDelete={handleDelete} />} />
               <Route path="/about" element={<About />} />
-              <Route path="/add-sock" element={<AddSock />}/>
+              <Route path="/add" element={
+                <RequireAuth>
+                  <AddSock />
+                </RequireAuth>}/>
+              <Route path="/login" element={<LoginForm/>}/>
             </Routes>
+            </AuthProvider>
             <Footer environment={import.meta.env.VITE_ENVIRONMENT}/>
           </div>
         </div>
