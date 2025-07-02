@@ -5,6 +5,9 @@ import * as router from 'react-router'
 import userEvent from '@testing-library/user-event';
 import LoginForm from './LoginForm';
 import '@testing-library/jest-dom';
+import { TextEncoder, TextDecoder } from 'util';
+
+Object.assign(global, { TextDecoder, TextEncoder });
 
 // Mocks
 jest.mock('../hooks/AuthContext', () => ({
@@ -13,11 +16,21 @@ jest.mock('../hooks/AuthContext', () => ({
     })
 }));
 
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: jest.fn(),
+}));
+
 const navigate = jest.fn()
 
 beforeEach(() => {
   jest.spyOn(router, 'useNavigate').mockImplementation(() => navigate)
 })
+
+beforeEach(() => {
+    // Mock implementation for useNavigate
+    require('react-router-dom').useNavigate.mockImplementation(() => navigate);
+  });
 
 describe('LoginForm Component', () => {
     test('renders correctly', () => {
